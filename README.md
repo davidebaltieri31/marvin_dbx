@@ -21,3 +21,6 @@ To enable CUDA:
 9. Change project properties Linker/Input/Additional Dependencies and add cudart_static.lib;cudnn.lib;cublas.lib;curand.lib;
 10. Add appropriate source code to your Source.cu file
 11. Build...
+
+
+Refer to the original base repo at https://github.com/PrincetonVision/marvin for everything else :D
