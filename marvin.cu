@@ -1,24 +1,13 @@
 // Please choose a data type to compile
 #define DATATYPE 0
 #include "marvin.hpp"
+#include "marvin_call.hpp"
 
 using namespace marvin;
 using namespace std;
 
-int main(int argc, char **argv){
-
-    if (argc < 3 || argc >10){
-        cout<<"Usage:"<<endl;
-        cout<<argv[0]<<" train network.json [model1.marvin[,model2.marvin,...]] [snapshot_iteration]"<<endl;
-        cout<<"       example: "<<argv[0]<<" train examples/mnist/lenet.json"<<endl;
-        cout<<argv[0]<<" test network.json model1.marvin[,model2.marvin,...] response_name1[,name2,...] file_name1.tensor[,name2.tensor,...] [save_every_n_iterations]"<<endl;
-        cout<<"       example: "<<argv[0]<<" test examples/mnist/lenet.json examples/mnist/lenet.marvin ip1,conv2 examples/mnist/ip1.tensor,examples/mnist/conv2.tensor"<<endl;
-        cout<<argv[0]<<" activate network.json model1.marvin[,model2.marvin,...] response_name_data response_name1[,name2,...] response1_channels[,response2_channels,...] file_prefix topK maxIterations"<<endl;
-        cout<<"       example: "<<argv[0]<<" activate examples/mnist/lenet.json examples/mnist/lenet.marvin data conv1,conv2 [0,1,2],[0,1,2,3,4,5] examples/mnist/filters_ 100 20"<<endl;
-        return 0;
-
-    }
-
+int marvin_dbx::call_marvin(int argc, char **argv)
+{
     cout<< "====================================================================================================================================="<<endl;
     cout<< ">> Hello, World! This is Marvin. I am at a rough estimate thirty billion times more intelligent than you. Let me give you an example."<<endl;
     cout<< "====================================================================================================================================="<<endl;

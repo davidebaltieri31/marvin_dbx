@@ -1,53 +1,23 @@
-# Marvin
+# Marvin, modified for Win&VS2013
 
 Marvin is a GPU-only neural network framework made with simplicity, hackability, speed, memory consumption, and high dimensional data in mind.
 
+This fork was modified to be compilable on Windows + Visual Studio 2013, and enable integration inside other projects (latter still WIP)
+
 ## Dependences
 
-Download [CUDA 7.5](https://developer.nvidia.com/cuda-downloads) and [cuDNN 5](https://developer.nvidia.com/cudnn). You will need to register with NVIDIA. Below are some additional steps to set up cuDNN 5. **NOTE** We highly recommend that you install different versions of cuDNN to different directories (e.g., ```/usr/local/cudnn/vXX```) because different software packages may require different versions.
+Download [CUDA 7.5](https://developer.nvidia.com/cuda-downloads) and [cuDNN 5](https://developer.nvidia.com/cudnn). 
 
-```shell
-LIB_DIR=lib$([[ $(uname) == "Linux" ]] && echo 64)
-CUDNN_LIB_DIR=/usr/local/cudnn/v5/$LIB_DIR
-echo LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CUDNN_LIB_DIR >> ~/.profile && ~/.profile
+To enable CUDA:
 
-tar zxvf cudnn*.tgz
-sudo cp cuda/$LIB_DIR/* $CUDNN_LIB_DIR/
-sudo cp cuda/include/* /usr/local/cudnn/v5/include/
-```
-
-## Compilation
-
-```shell
-./compile.sh
-```
-
-## MNIST
-
-1. Prepare data: run examples/mnist/prepare_mnist.m in Matlab
-2. Train a model: run ./examples/mnist/demo.sh in shell
-3. Visualize filters: run examples/mnist/demo_vis_filter.m in Matlab
-
-## Tutorials and Documentation
-Please see our website at [http://marvin.is](http://marvin.is).
-
-## Citation
-The following is the citation of the current version of Marvin. Note that the reference may change in the future when new contributors join the project.
-
-```latex
-@misc{Marvin20151110,
-      title        = {Marvin: A minimalist {GPU}-only {N}-dimensional {ConvNet} framework},
-      author       = {Jianxiong Xiao and Shuran Song and Daniel Suo and Fisher Yu},
-      howpublished = {\url{http://marvin.is}},
-      note         = {Accessed: 2015-11-10}
-}
-```
-
-## Acknowledgements
-Marvin stands on the shoulders of others who have open-sourced their work. You can find the source code of their projects along with license information below. We acknowledge and are grateful to these developers and researchers for their contributions to open source.
-
-- [Fast-RCNN](https://github.com/rbgirshick/fast-rcnn) ([License](https://github.com/rbgirshick/fast-rcnn/blob/master/LICENSE)) Copyright (c) Microsoft Corporation
-- [Darknet](https://github.com/pjreddie/darknet) ([License](https://github.com/pjreddie/darknet/blob/master/LICENSE))
-- [Caffe](https://github.com/BVLC/caffe/) ([License](https://github.com/BVLC/caffe/blob/master/LICENSE)) Copyright (c) 2014, 2015 The Regents of the University of California
-- [Mocha.jl](https://github.com/pluskid/Mocha.jl) ([License](https://github.com/pluskid/Mocha.jl/blob/master/LICENSE.md)) Copyright (c) 2014 Chiyuan Zhuang
-- [Fast Depth-RCNN](https://github.com/s-gupta/fast-rcnn/tree/distillation) ([License](https://github.com/s-gupta/fast-rcnn/blob/distillation/LICENSE_fast_rcnn)) Copyright (c) Microsoft Corporation
+1. Open VS2013 Express
+2. Click on New Project...
+3. Select Visual C++, then General, then Empty Project
+4. At this point you should have a new project open. Right click on the project (name) and select Build Dependencies... Build Customizations...
+5. A new dialog opens, select the CUDA 7.5 (.targets,.props) checkbox, and click OK
+6. In your project explorer window, right click on marvin.cu file, and select CUDA C++, then make any changes (for example, you may want to change the build target from sm_20 to something else...)
+7. Change project properties C++/Additional Include Directories and add cuDNN include dir
+8. Change project properties Linker/Additional Library Directories and add cuDNN lib dir and CUDA 7.5 lib dir
+9. Change project properties Linker/Input/Additional Dependencies and add cudart_static.lib;cudnn.lib;cublas.lib;curand.lib;
+10. Add appropriate source code to your Source.cu file
+11. Build...

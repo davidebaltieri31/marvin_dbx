@@ -4,9 +4,8 @@
  * Copyright (C) 2015 Princeton Vision Group
  * ----------------------------------------------------------------------------
  */
-
 #if DATATYPE==0
-    #pragma message "Compiling using StorageT=half ComputeT=float"
+    #pragma message ("Compiling using StorageT=half ComputeT=float")
     #define StorageT half
     #define ComputeT float
     #define sizeofStorageT 2
@@ -23,7 +22,7 @@
     #define ComputeT_MIN FLT_MIN
     #include <cuda_fp16.h>
 #elif DATATYPE==1
-    #pragma message "Compiling using StorageT=float ComputeT=float"
+    #pragma message ("Compiling using StorageT=float ComputeT=float")
     #define StorageT float
     #define ComputeT float
     #define sizeofStorageT 4
@@ -39,7 +38,7 @@
     #define ISNAN(x) (std::isnan(x))
     #define ComputeT_MIN FLT_MIN
 #elif DATATYPE==2
-    #pragma message "Compiling using StorageT=double ComputeT=double"
+    #pragma message ("Compiling using StorageT=double ComputeT=double")
     #define StorageT double
     #define ComputeT double
     #define sizeofStorageT 8
@@ -81,7 +80,7 @@
 #include <cublas_v2.h>
 #include <curand.h>
 #include <cudnn.h>
-#include <sys/time.h>
+#include "WinTime.h"
 
 namespace marvin {
 
@@ -3809,7 +3808,7 @@ class DiskDataLayer : public DataLayer {
             Kernel_convert_to_StorageT_subtract<<<CUDA_GET_BLOCKS(numel_batch_all_channel_crop), CUDA_NUM_THREADS>>>(CUDA_GET_LOOPS(numel_batch_all_channel_crop), numel_batch_all_channel_crop, numel_all_channel_crop, dataGPU[data_i], mean_data, out[data_i]->dataGPU);
         }
         std::swap(out[file_data.size()]->dataGPU,labelGPU);
-        lock = std::async(std::launch::async,&DiskDataLayer<T>::prefetch,this);
+		lock = std::async(std::launch::async, [this] { this->prefetch(); });
     };
 
 
@@ -3852,8 +3851,7 @@ class DiskDataLayer : public DataLayer {
             memoryBytes += numel_batch_all_channel_crop * sizeof(T);
         }
 
-        lock = std::async(std::launch::async,&DiskDataLayer<T>::prefetch,this);
-
+		lock = std::async(std::launch::async, [this] { this->prefetch(); });
         return memoryBytes;
     };  
 };
@@ -7910,7 +7908,7 @@ public:
                 }else{
                     for (int t=0; t<threads.size(); ++t){
                         nets[t]->phase = Testing;
-                        threads[t] = std::thread(&Net::stepTest, nets[t], true);    //nets[t]->stepTest();
+						threads[t] = std::thread([this, t] { this->nets[t]->stepTest(true); });    //nets[t]->stepTest();
                     }
                     for (int t=0; t<threads.size(); ++t){
                         threads[t].join();
@@ -7936,7 +7934,7 @@ public:
                 nets[0]->stepTrain(false);
             }else{
                 for (int t=0; t<threads.size(); ++t){
-                    threads[t] = std::thread(&Net::stepTrain, nets[t], true);   //nets[t]->stepTrain();
+					threads[t] = std::thread([this, t] { this->nets[t]->stepTrain(true); }); //nets[t]->stepTrain();
                 }
                 for (int t=0; t<threads.size(); ++t){
                     threads[t].join();
@@ -7959,7 +7957,7 @@ public:
                     nets[0]->eval(false);
                 }else{
                     for (int t=0; t<threads.size(); ++t){
-                        threads[t] = std::thread(&Net::eval, nets[t], true); //nets[t]->eval();
+						threads[t] = std::thread([this, t] { this->nets[t]->eval(true); }); //nets[t]->eval();
                     }
                     for (int t=0; t<threads.size(); ++t){
                         threads[t].join();
